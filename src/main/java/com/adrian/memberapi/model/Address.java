@@ -20,7 +20,7 @@ public class Address {
     private String city;
 
     //Anvöäd set istället för list för att förhindra att samma member mappas till samma address mer en en gång
-    @OneToMany(mappedBy = "address", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "address", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Member> members = new HashSet<>();
 
     public Address() {

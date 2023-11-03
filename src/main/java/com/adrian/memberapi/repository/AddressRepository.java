@@ -6,6 +6,7 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class AddressRepository implements CustomJPARepository<Address, Long>{
@@ -14,8 +15,9 @@ public class AddressRepository implements CustomJPARepository<Address, Long>{
     private EntityManager entityManager;
 
     @Override
-    public Address find(Long id) {
-        return entityManager.find(Address.class, id);
+    public Optional<Address> find(Long id) {
+        Address address = entityManager.find(Address.class, id);
+        return Optional.ofNullable(address);
     }
 
     @Override
@@ -36,10 +38,8 @@ public class AddressRepository implements CustomJPARepository<Address, Long>{
 
     @Override
     public void delete(Long id) {
-        Address address = find(id);
-        if(address != null){
-            entityManager.remove(address);
-        }
+        Optional<Address> address = find(id);
+        address.ifPresent(value -> entityManager.remove(value));
 
     }
 }

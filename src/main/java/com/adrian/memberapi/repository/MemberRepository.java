@@ -6,6 +6,7 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class MemberRepository implements CustomJPARepository<Member, Long>{
@@ -14,8 +15,9 @@ public class MemberRepository implements CustomJPARepository<Member, Long>{
     private EntityManager entityManager;
 
     @Override
-    public Member find(Long id) {
-        return entityManager.find(Member.class, id);
+    public Optional<Member> find(Long id) {
+        Member member = entityManager.find(Member.class, id);
+        return Optional.ofNullable(member);
     }
 
     @Override
@@ -35,9 +37,7 @@ public class MemberRepository implements CustomJPARepository<Member, Long>{
 
     @Override
     public void delete(Long id) {
-        Member member = find(id);
-        if(member != null){
-            entityManager.remove(member);
-        }
+        Optional<Member> member = find(id);
+        member.ifPresent(value -> entityManager.remove(value));
     }
 }

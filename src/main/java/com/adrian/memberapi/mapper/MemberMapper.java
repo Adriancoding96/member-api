@@ -4,7 +4,9 @@ import com.adrian.memberapi.dto.AddressDTO;
 import com.adrian.memberapi.dto.MemberDTO;
 import com.adrian.memberapi.model.Address;
 import com.adrian.memberapi.model.Member;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MemberMapper {
 
     public MemberDTO toDTO(Member member){
@@ -14,6 +16,7 @@ public class MemberMapper {
         memberDTO.setLastName(member.getLastName());
         memberDTO.setEmail(member.getEmail());
         memberDTO.setPhone(member.getPhone());
+        memberDTO.setDateOfBirth(member.getDateOfBirth());
         if(member.getAddress() != null){
             AddressDTO addressDTO = new AddressDTO();
             addressDTO.setId(member.getAddress().getId());
@@ -32,6 +35,7 @@ public class MemberMapper {
         member.setLastName(memberDTO.getLastName());
         member.setEmail(memberDTO.getEmail());
         member.setPhone(memberDTO.getPhone());
+        member.setDateOfBirth(memberDTO.getDateOfBirth());
         if(memberDTO.getAddress() != null){
             Address address = new Address();
             address.setId(memberDTO.getAddress().getId());
@@ -41,5 +45,25 @@ public class MemberMapper {
             member.setAddress(address);
         }
         return member;
+    }
+
+    public Member UpdateMemberFromDTO(Member existingMember, MemberDTO memberDTO){
+        existingMember.setFirstName(memberDTO.getFirstName());
+        existingMember.setLastName(memberDTO.getLastName());
+        existingMember.setEmail(memberDTO.getEmail());
+        existingMember.setPhone(memberDTO.getPhone());
+        existingMember.setDateOfBirth(memberDTO.getDateOfBirth());
+
+        if(memberDTO.getAddress() != null){
+            Address address = existingMember.getAddress();
+            if (address == null) {
+                address = new Address();
+                existingMember.setAddress(address);
+            }
+            address.setStreet(memberDTO.getAddress().getStreet());
+            address.setPostalCode(memberDTO.getAddress().getPostalCode());
+            address.setCity(memberDTO.getAddress().getCity());
+        }
+        return existingMember;
     }
 }
