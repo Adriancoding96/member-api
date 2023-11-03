@@ -2,20 +2,20 @@ package com.adrian.memberapi.dto;
 
 import java.time.LocalDate;
 
-public class MemberDTO {
+public class MemberFullDTO {
     private Long id;
     private String firstName;
     private String lastName;
-    private AddressDTO address;
+    private AddressFullDTO address;
     private String email;
     private String phone;
     private LocalDate dateOfBirth;
 
-    public MemberDTO(){
+    public MemberFullDTO(){
 
     }
 
-    public MemberDTO(Long id, String firstName, String lastName, AddressDTO address, String email, String phone, LocalDate dateOfBirth) {
+    public MemberFullDTO(Long id, String firstName, String lastName, AddressFullDTO address, String email, String phone, LocalDate dateOfBirth) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -37,7 +37,7 @@ public class MemberDTO {
         return lastName;
     }
 
-    public AddressDTO getAddress() {
+    public AddressFullDTO getAddress() {
         return address;
     }
 
@@ -65,7 +65,7 @@ public class MemberDTO {
         this.lastName = lastName;
     }
 
-    public void setAddress(AddressDTO address) {
+    public void setAddress(AddressFullDTO address) {
         this.address = address;
     }
 

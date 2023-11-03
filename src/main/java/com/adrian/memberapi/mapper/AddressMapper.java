@@ -1,13 +1,13 @@
 package com.adrian.memberapi.mapper;
 
-import com.adrian.memberapi.dto.AddressDTO;
+import com.adrian.memberapi.dto.AddressFullDTO;
 import com.adrian.memberapi.model.Address;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AddressMapper {
 
-    public Address toEntity(AddressDTO addressDTO){
+    public Address toEntity(AddressFullDTO addressDTO){
         Address address = new Address();
         if(address.getId() != null){
             address.setId(addressDTO.getId());

@@ -1,7 +1,8 @@
 package com.adrian.memberapi.service.implementation;
 
-import com.adrian.memberapi.dto.AddressDTO;
-import com.adrian.memberapi.dto.MemberDTO;
+import com.adrian.memberapi.dto.AddressFullDTO;
+import com.adrian.memberapi.dto.MemberFullDTO;
+import com.adrian.memberapi.dto.MemberReducedDTO;
 import com.adrian.memberapi.mapper.AddressMapper;
 import com.adrian.memberapi.mapper.MemberMapper;
 import com.adrian.memberapi.model.Address;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,48 +38,56 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public List<MemberDTO> getAllMembers() {
+    public List<MemberFullDTO> getAllMembers() {
         List<Member> members = memberRepository.findAll();
         return members.stream()
-                .map(memberMapper::toDTO)
+                .map(memberMapper::toFullDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public MemberDTO getMemberById(Long id) {
+    public List<MemberReducedDTO> getAllMembersLimitedInfo() {
+        List<Member> members = memberRepository.findAll();
+        return members.stream()
+                .map(memberMapper::toReducedDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public MemberFullDTO getMemberById(Long id) {
         Optional<Member> member = memberRepository.find(id);
         if(member.isEmpty()){
             throw new RuntimeException("Member not found");
         }
-        return memberMapper.toDTO(member.get());
+        return memberMapper.toFullDTO(member.get());
     }
 
     @Override
     @Transactional
-    public MemberDTO saveMember(MemberDTO memberDTO) {
-        AddressDTO addressDTO = memberDTO.getAddress();
+    public MemberFullDTO saveMember(MemberFullDTO memberDTO) {
+        AddressFullDTO addressDTO = memberDTO.getAddress();
         Address address = addressMapper.toEntity(addressDTO);
         Address persistedAddress = new Address();
         if(addressDTO != null && addressDTO.getId() == null){
             persistedAddress = addressRepository.save(address);
         }
-        Member member = memberMapper.toEntity(memberDTO);
+        Member member = memberMapper.toEntityFromFullDTO(memberDTO);
         member.setAddress(persistedAddress);
         Member savedMember = memberRepository.save(member);
-        return memberMapper.toDTO(savedMember);
+        return memberMapper.toFullDTO(savedMember);
     }
 
     @Override
     @Transactional
-    public MemberDTO updateMember(Long id, MemberDTO memberDTO) {
+    public MemberFullDTO updateMember(Long id, MemberFullDTO memberDTO) {
         Optional<Member> existingMember = memberRepository.find(id);
         if(existingMember.isEmpty()){
             //Replace with custom exception
             throw new RuntimeException("Member not found");
         }
-        Member updatedMember = memberMapper.UpdateMemberFromDTO(existingMember.get(), memberDTO);
+        Member updatedMember = memberMapper.UpdateMemberFromFullDTO(existingMember.get(), memberDTO);
         updatedMember = memberRepository.save(updatedMember);
-        return memberMapper.toDTO(updatedMember);
+        return memberMapper.toFullDTO(updatedMember);
     }
 
     @Override

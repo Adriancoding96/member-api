@@ -1,7 +1,9 @@
 package com.adrian.memberapi.mapper;
 
-import com.adrian.memberapi.dto.AddressDTO;
-import com.adrian.memberapi.dto.MemberDTO;
+import com.adrian.memberapi.dto.AddressFullDTO;
+import com.adrian.memberapi.dto.AddressReducedDTO;
+import com.adrian.memberapi.dto.MemberFullDTO;
+import com.adrian.memberapi.dto.MemberReducedDTO;
 import com.adrian.memberapi.model.Address;
 import com.adrian.memberapi.model.Member;
 import org.springframework.stereotype.Component;
@@ -9,8 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class MemberMapper {
 
-    public MemberDTO toDTO(Member member){
-        MemberDTO memberDTO = new MemberDTO();
+    /*NEED TO REDUCE DUPLICATED CODE*/
+
+    public MemberFullDTO toFullDTO(Member member){
+        MemberFullDTO memberDTO = new MemberFullDTO();
         memberDTO.setId(member.getId());
         memberDTO.setFirstName(member.getFirstName());
         memberDTO.setLastName(member.getLastName());
@@ -18,7 +22,7 @@ public class MemberMapper {
         memberDTO.setPhone(member.getPhone());
         memberDTO.setDateOfBirth(member.getDateOfBirth());
         if(member.getAddress() != null){
-            AddressDTO addressDTO = new AddressDTO();
+            AddressFullDTO addressDTO = new AddressFullDTO();
             addressDTO.setId(member.getAddress().getId());
             addressDTO.setStreet(member.getAddress().getStreet());
             addressDTO.setPostalCode(member.getAddress().getPostalCode());
@@ -28,7 +32,23 @@ public class MemberMapper {
         return memberDTO;
     }
 
-    public Member toEntity(MemberDTO memberDTO){
+    public MemberReducedDTO toReducedDTO(Member member){
+        MemberReducedDTO memberDTO = new MemberReducedDTO();
+        memberDTO.setFirstName(member.getFirstName());
+        memberDTO.setLastName(member.getLastName());
+        memberDTO.setEmail(member.getEmail());
+        memberDTO.setPhone(member.getPhone());
+        if(member.getAddress() != null){
+            AddressReducedDTO addressDTO = new AddressReducedDTO();
+            addressDTO.setStreet(member.getAddress().getStreet());
+            addressDTO.setPostalCode(member.getAddress().getPostalCode());
+            addressDTO.setCity(member.getAddress().getCity());
+            memberDTO.setAddress(addressDTO);
+        }
+        return memberDTO;
+    }
+
+    public Member toEntityFromFullDTO(MemberFullDTO memberDTO){
         Member member = new Member();
         member.setId(memberDTO.getId());
         member.setFirstName(memberDTO.getFirstName());
@@ -47,12 +67,31 @@ public class MemberMapper {
         return member;
     }
 
-    public Member UpdateMemberFromDTO(Member existingMember, MemberDTO memberDTO){
+    public Member UpdateMemberFromFullDTO(Member existingMember, MemberFullDTO memberDTO){
         existingMember.setFirstName(memberDTO.getFirstName());
         existingMember.setLastName(memberDTO.getLastName());
         existingMember.setEmail(memberDTO.getEmail());
         existingMember.setPhone(memberDTO.getPhone());
         existingMember.setDateOfBirth(memberDTO.getDateOfBirth());
+
+        if(memberDTO.getAddress() != null){
+            Address address = existingMember.getAddress();
+            if (address == null) {
+                address = new Address();
+                existingMember.setAddress(address);
+            }
+            address.setStreet(memberDTO.getAddress().getStreet());
+            address.setPostalCode(memberDTO.getAddress().getPostalCode());
+            address.setCity(memberDTO.getAddress().getCity());
+        }
+        return existingMember;
+    }
+
+    public Member UpdateMemberFromReducedDTO(Member existingMember, MemberReducedDTO memberDTO){
+        existingMember.setFirstName(memberDTO.getFirstName());
+        existingMember.setLastName(memberDTO.getLastName());
+        existingMember.setEmail(memberDTO.getEmail());
+        existingMember.setPhone(memberDTO.getPhone());
 
         if(memberDTO.getAddress() != null){
             Address address = existingMember.getAddress();

@@ -1,6 +1,6 @@
 package com.adrian.memberapi.controller;
 
-import com.adrian.memberapi.dto.MemberDTO;
+import com.adrian.memberapi.dto.MemberFullDTO;
 import com.adrian.memberapi.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,15 +22,15 @@ public class AdminController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MemberDTO>> getAllMembers(){
-        List<MemberDTO> members = memberService.getAllMembers();
+    public ResponseEntity<List<MemberFullDTO>> getAllMembers(){
+        List<MemberFullDTO> members = memberService.getAllMembers();
         return ResponseEntity.ok(members);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MemberDTO> getMemberById(@PathVariable Long id){
+    public ResponseEntity<MemberFullDTO> getMemberById(@PathVariable Long id){
         try{
-            MemberDTO member = memberService.getMemberById(id);
+            MemberFullDTO member = memberService.getMemberById(id);
             return ResponseEntity.ok(member);
         } catch (RuntimeException e){
             return ResponseEntity.notFound().build();
@@ -38,8 +38,8 @@ public class AdminController {
     }
 
     @PostMapping
-    public ResponseEntity<MemberDTO> addMember(@RequestBody MemberDTO memberDTO){
-        MemberDTO persistedMember = memberService.saveMember(memberDTO);
+    public ResponseEntity<MemberFullDTO> addMember(@RequestBody MemberFullDTO memberDTO){
+        MemberFullDTO persistedMember = memberService.saveMember(memberDTO);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -49,9 +49,9 @@ public class AdminController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MemberDTO> updateMember(@PathVariable Long id, @RequestBody MemberDTO memberDTO){
+    public ResponseEntity<MemberFullDTO> updateMember(@PathVariable Long id, @RequestBody MemberFullDTO memberDTO){
         try{
-            MemberDTO updatedMember = memberService.updateMember(id, memberDTO);
+            MemberFullDTO updatedMember = memberService.updateMember(id, memberDTO);
             return ResponseEntity.ok(updatedMember);
         } catch (RuntimeException e){
             return ResponseEntity.notFound().build();

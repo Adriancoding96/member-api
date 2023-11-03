@@ -1,24 +1,19 @@
 package com.adrian.memberapi.dto;
 
-public class AddressDTO {
-    private Long id;
+public class AddressReducedDTO {
+
     private String street;
     private String postalCode;
     private String city;
 
-    public AddressDTO(){
+    public AddressReducedDTO(){
 
     }
 
-    public AddressDTO(Long id, String street, String postalCode, String city) {
-        this.id = id;
+    public AddressReducedDTO(String street, String postalCode, String city) {
         this.street = street;
         this.postalCode = postalCode;
         this.city = city;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getStreet() {
@@ -31,10 +26,6 @@ public class AddressDTO {
 
     public String getCity() {
         return city;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setStreet(String street) {
