@@ -7,6 +7,7 @@ public class MemberFullDTO {
     private String firstName;
     private String lastName;
     private AddressFullDTO address;
+    private UserCredentialsDTO userCredentials;
     private String email;
     private String phone;
     private LocalDate dateOfBirth;
@@ -15,11 +16,12 @@ public class MemberFullDTO {
 
     }
 
-    public MemberFullDTO(Long id, String firstName, String lastName, AddressFullDTO address, String email, String phone, LocalDate dateOfBirth) {
+    public MemberFullDTO(Long id, String firstName, String lastName, AddressFullDTO address, UserCredentialsDTO userCredentials, String email, String phone, LocalDate dateOfBirth) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
+        this.userCredentials = userCredentials;
         this.email = email;
         this.phone = phone;
         this.dateOfBirth = dateOfBirth;
@@ -39,6 +41,10 @@ public class MemberFullDTO {
 
     public AddressFullDTO getAddress() {
         return address;
+    }
+
+    public UserCredentialsDTO getUserCredentials() {
+        return userCredentials;
     }
 
     public String getEmail() {
@@ -67,6 +73,10 @@ public class MemberFullDTO {
 
     public void setAddress(AddressFullDTO address) {
         this.address = address;
+    }
+
+    public void setUserCredentials(UserCredentialsDTO userCredentials) {
+        this.userCredentials = userCredentials;
     }
 
     public void setEmail(String email) {

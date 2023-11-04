@@ -1,11 +1,9 @@
 package com.adrian.memberapi.mapper;
 
-import com.adrian.memberapi.dto.AddressFullDTO;
-import com.adrian.memberapi.dto.AddressReducedDTO;
-import com.adrian.memberapi.dto.MemberFullDTO;
-import com.adrian.memberapi.dto.MemberReducedDTO;
+import com.adrian.memberapi.dto.*;
 import com.adrian.memberapi.model.Address;
 import com.adrian.memberapi.model.Member;
+import com.adrian.memberapi.model.UserCredentials;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,6 +19,12 @@ public class MemberMapper {
         memberDTO.setEmail(member.getEmail());
         memberDTO.setPhone(member.getPhone());
         memberDTO.setDateOfBirth(member.getDateOfBirth());
+        if(member.getUserCredentials() != null){
+            UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
+            userCredentialsDTO.setId(member.getUserCredentials().getId());
+            userCredentialsDTO.setUsername(member.getUserCredentials().getUsername());
+            memberDTO.setUserCredentials(userCredentialsDTO);
+        }
         if(member.getAddress() != null){
             AddressFullDTO addressDTO = new AddressFullDTO();
             addressDTO.setId(member.getAddress().getId());
@@ -56,6 +60,12 @@ public class MemberMapper {
         member.setEmail(memberDTO.getEmail());
         member.setPhone(memberDTO.getPhone());
         member.setDateOfBirth(memberDTO.getDateOfBirth());
+        if(memberDTO.getUserCredentials() != null){
+            UserCredentials userCredentials = new UserCredentials();
+            userCredentials.setId(memberDTO.getUserCredentials().getId());
+            userCredentials.setUsername(memberDTO.getUserCredentials().getUsername());
+            member.setUserCredentials(userCredentials);
+        }
         if(memberDTO.getAddress() != null){
             Address address = new Address();
             address.setId(memberDTO.getAddress().getId());
@@ -73,7 +83,10 @@ public class MemberMapper {
         existingMember.setEmail(memberDTO.getEmail());
         existingMember.setPhone(memberDTO.getPhone());
         existingMember.setDateOfBirth(memberDTO.getDateOfBirth());
-
+        if(memberDTO.getUserCredentials() != null){
+            existingMember.getUserCredentials().setId(memberDTO.getUserCredentials().getId());
+            existingMember.getUserCredentials().setUsername(memberDTO.getUserCredentials().getUsername());
+        }
         if(memberDTO.getAddress() != null){
             Address address = existingMember.getAddress();
             if (address == null) {
