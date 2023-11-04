@@ -3,6 +3,7 @@ package com.adrian.memberapi.service.implementation;
 import com.adrian.memberapi.dto.AddressFullDTO;
 import com.adrian.memberapi.dto.MemberFullDTO;
 import com.adrian.memberapi.dto.MemberReducedDTO;
+import com.adrian.memberapi.exception.NotFoundException;
 import com.adrian.memberapi.mapper.AddressMapper;
 import com.adrian.memberapi.mapper.MemberMapper;
 import com.adrian.memberapi.model.Address;
@@ -57,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberFullDTO getMemberById(Long id) {
         Optional<Member> member = memberRepository.find(id);
         if(member.isEmpty()){
-            throw new RuntimeException("Member not found");
+            throw new NotFoundException("Member with id: " + id + " not found");
         }
         return memberMapper.toFullDTO(member.get());
     }
@@ -82,8 +83,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberFullDTO updateMember(Long id, MemberFullDTO memberDTO) {
         Optional<Member> existingMember = memberRepository.find(id);
         if(existingMember.isEmpty()){
-            //Replace with custom exception
-            throw new RuntimeException("Member not found");
+            throw new NotFoundException("Member with id: " + id + " not found");
         }
         Member updatedMember = memberMapper.UpdateMemberFromFullDTO(existingMember.get(), memberDTO);
         updatedMember = memberRepository.save(updatedMember);

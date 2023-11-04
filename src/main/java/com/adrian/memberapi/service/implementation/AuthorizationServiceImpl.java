@@ -1,5 +1,6 @@
 package com.adrian.memberapi.service.implementation;
 
+import com.adrian.memberapi.exception.UnauthorizedException;
 import com.adrian.memberapi.model.UserCredentials;
 import com.adrian.memberapi.repository.UserCredentialsRepository;
 import com.adrian.memberapi.service.AuthorizationService;
@@ -23,7 +24,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         UserCredentials userCredentials = userCredentialsRepository.findByUsername(username);
         System.out.println(userCredentials.getUsername());
         if(!Objects.equals(userCredentials.getId(), id)){
-            throw new RuntimeException("Unauthorized");
+            throw new UnauthorizedException("Unauthorized");
         }
 
         return true;

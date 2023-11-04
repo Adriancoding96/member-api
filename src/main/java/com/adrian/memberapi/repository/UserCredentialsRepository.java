@@ -1,5 +1,6 @@
 package com.adrian.memberapi.repository;
 
+import com.adrian.memberapi.exception.UserNotFoundException;
 import com.adrian.memberapi.model.UserCredentials;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -47,7 +48,7 @@ public class UserCredentialsRepository implements CustomJPARepository<UserCreden
         try {
             return query.getSingleResult();
         } catch (RuntimeException e) {
-            return null;
+            throw new UserNotFoundException("User with username: " + username + " not found");
         }
     }
 }

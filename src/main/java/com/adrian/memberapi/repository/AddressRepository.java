@@ -1,8 +1,11 @@
 package com.adrian.memberapi.repository;
 
+import com.adrian.memberapi.exception.EntityNotFoundException;
+import com.adrian.memberapi.exception.EntityPersistenceException;
 import com.adrian.memberapi.model.Address;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,19 +30,27 @@ public class AddressRepository implements CustomJPARepository<Address, Long>{
 
     @Override
     public Address save(Address address) {
-        if(address.getId() == null){
-            entityManager.persist(address);
-        } else {
-            entityManager.merge(address);
+        try{
+            if(address.getId() == null){
+                entityManager.persist(address);
+            } else {
+                entityManager.merge(address);
+            }
+            return address;
+        } catch (EntityPersistenceException e){
+            throw new EntityPersistenceException("Could not persist address: " + e.getMessage());
         }
-
-        return address;
     }
 
     @Override
     public void delete(Long id) {
         Optional<Address> address = find(id);
-        address.ifPresent(value -> entityManager.remove(value));
+        if (address.isPresent()){
+            entityManager.remove(address.get());
+        } else{
+            throw new EntityNotFoundException("Address with id: " + id + " not found");
+        }
+
 
     }
 }

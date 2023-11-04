@@ -1,5 +1,7 @@
 package com.adrian.memberapi.repository;
 
+import com.adrian.memberapi.exception.EntityNotFoundException;
+import com.adrian.memberapi.exception.EntityPersistenceException;
 import com.adrian.memberapi.model.Member;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -27,6 +29,11 @@ public class MemberRepository implements CustomJPARepository<Member, Long>{
 
     @Override
     public Member save(Member member) {
+        try{
+
+        } catch (EntityPersistenceException e){
+            throw new EntityPersistenceException("Could not persist member: " + e.getMessage());
+        }
         if(member.getId() == null){
             entityManager.persist(member);
         } else {
@@ -38,6 +45,11 @@ public class MemberRepository implements CustomJPARepository<Member, Long>{
     @Override
     public void delete(Long id) {
         Optional<Member> member = find(id);
+        if(member.isPresent()){
+            entityManager.remove(member);
+        } else{
+            throw new EntityNotFoundException("Member with id: " + id + " not found");
+        }
         member.ifPresent(value -> entityManager.remove(value));
     }
 }
