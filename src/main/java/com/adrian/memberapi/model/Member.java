@@ -1,6 +1,7 @@
 package com.adrian.memberapi.model;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDate;
 
@@ -27,19 +28,23 @@ public class Member {
     @JoinColumn(name = "address_id")
     private Address address;
 
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    private UserCredentials userCredentials;
+
     public Member() {
     }
 
-    public Member(String firstName, String lastName, String email, String phone, LocalDate dateOfBirth, Address address) {
+    public Member(String firstName, String lastName, String email, String phone, LocalDate dateOfBirth, Address address, UserCredentials userCredentials) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
         this.dateOfBirth = dateOfBirth;
         this.address = address;
+        this.userCredentials = userCredentials;
     }
 
-    public Member(Long id, String firstName, String lastName, String email, String phone, LocalDate dateOfBirth, Address address) {
+    public Member(Long id, String firstName, String lastName, String email, String phone, LocalDate dateOfBirth, Address address, UserCredentials userCredentials) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -47,6 +52,7 @@ public class Member {
         this.phone = phone;
         this.dateOfBirth = dateOfBirth;
         this.address = address;
+        this.userCredentials = userCredentials;
     }
 
     public Long getId() {
@@ -77,6 +83,10 @@ public class Member {
         return address;
     }
 
+    public UserCredentials getUserCredentials() {
+        return userCredentials;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -103,5 +113,9 @@ public class Member {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public void setUserCredentials(UserCredentials userCredentials) {
+        this.userCredentials = userCredentials;
     }
 }

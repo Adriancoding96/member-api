@@ -4,6 +4,7 @@ import com.adrian.memberapi.dto.MemberFullDTO;
 import com.adrian.memberapi.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -13,6 +14,7 @@ import java.util.List;
 /*test*/
 @RestController
 @RequestMapping("/admin/members")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     private final MemberService memberService;

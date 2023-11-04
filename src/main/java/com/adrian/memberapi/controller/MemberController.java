@@ -5,6 +5,7 @@ import com.adrian.memberapi.dto.MemberReducedDTO;
 import com.adrian.memberapi.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/mypages/members")
+@PreAuthorize("hasRole('USER')")
 public class MemberController {
 
     private final MemberService memberService;
