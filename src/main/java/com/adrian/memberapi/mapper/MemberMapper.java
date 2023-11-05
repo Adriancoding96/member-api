@@ -20,9 +20,11 @@ public class MemberMapper {
         memberDTO.setPhone(member.getPhone());
         memberDTO.setDateOfBirth(member.getDateOfBirth());
         if(member.getUserCredentials() != null){
-            UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
+            UserCredentialsFullDTO userCredentialsDTO = new UserCredentialsFullDTO();
             userCredentialsDTO.setId(member.getUserCredentials().getId());
             userCredentialsDTO.setUsername(member.getUserCredentials().getUsername());
+            userCredentialsDTO.setPassword(member.getUserCredentials().getPassword());
+            userCredentialsDTO.setRole(member.getUserCredentials().getRole());
             memberDTO.setUserCredentials(userCredentialsDTO);
         }
         if(member.getAddress() != null){
@@ -64,6 +66,8 @@ public class MemberMapper {
             UserCredentials userCredentials = new UserCredentials();
             userCredentials.setId(memberDTO.getUserCredentials().getId());
             userCredentials.setUsername(memberDTO.getUserCredentials().getUsername());
+            userCredentials.setPassword(memberDTO.getUserCredentials().getPassword());
+            userCredentials.setRole(memberDTO.getUserCredentials().getRole());
             member.setUserCredentials(userCredentials);
         }
         if(memberDTO.getAddress() != null){
@@ -84,18 +88,27 @@ public class MemberMapper {
         existingMember.setPhone(memberDTO.getPhone());
         existingMember.setDateOfBirth(memberDTO.getDateOfBirth());
         if(memberDTO.getUserCredentials() != null){
-            existingMember.getUserCredentials().setId(memberDTO.getUserCredentials().getId());
-            existingMember.getUserCredentials().setUsername(memberDTO.getUserCredentials().getUsername());
+            UserCredentials userCredentials = new UserCredentials();
+            if(memberDTO.getUserCredentials() == null){
+                userCredentials = new UserCredentials();
+            }
+            userCredentials.setId(memberDTO.getUserCredentials().getId());
+            userCredentials.setUsername(memberDTO.getUserCredentials().getUsername());
+            userCredentials.setPassword(memberDTO.getUserCredentials().getPassword());
+            userCredentials.setRole(memberDTO.getUserCredentials().getRole());
+            userCredentials.setMember(existingMember);
+            existingMember.setUserCredentials(userCredentials);
         }
         if(memberDTO.getAddress() != null){
             Address address = existingMember.getAddress();
             if (address == null) {
                 address = new Address();
-                existingMember.setAddress(address);
             }
+            address.setId(memberDTO.getAddress().getId());
             address.setStreet(memberDTO.getAddress().getStreet());
             address.setPostalCode(memberDTO.getAddress().getPostalCode());
             address.setCity(memberDTO.getAddress().getCity());
+            existingMember.setAddress(address);
         }
         return existingMember;
     }

@@ -9,7 +9,7 @@ public class AddressMapper {
 
     public Address toEntity(AddressFullDTO addressDTO){
         Address address = new Address();
-        if(address.getId() != null){
+        if(addressDTO.getId() != null){
             address.setId(addressDTO.getId());
         }
         address.setStreet(addressDTO.getStreet());

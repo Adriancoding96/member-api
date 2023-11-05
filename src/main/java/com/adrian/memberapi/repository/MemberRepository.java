@@ -30,26 +30,24 @@ public class MemberRepository implements CustomJPARepository<Member, Long>{
     @Override
     public Member save(Member member) {
         try{
-
+            if(member.getId() == null){
+                entityManager.persist(member);
+            } else {
+                entityManager.merge(member);
+            }
+            return member;
         } catch (EntityPersistenceException e){
             throw new EntityPersistenceException("Could not persist member: " + e.getMessage());
         }
-        if(member.getId() == null){
-            entityManager.persist(member);
-        } else {
-            entityManager.merge(member);
-        }
-        return member;
     }
 
     @Override
     public void delete(Long id) {
         Optional<Member> member = find(id);
         if(member.isPresent()){
-            entityManager.remove(member);
+            entityManager.remove(member.get());
         } else{
             throw new EntityNotFoundException("Member with id: " + id + " not found");
         }
-        member.ifPresent(value -> entityManager.remove(value));
     }
 }

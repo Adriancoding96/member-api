@@ -1,5 +1,7 @@
 package com.adrian.memberapi.repository;
 
+import com.adrian.memberapi.exception.EntityNotFoundException;
+import com.adrian.memberapi.exception.EntityPersistenceException;
 import com.adrian.memberapi.exception.UserNotFoundException;
 import com.adrian.memberapi.model.UserCredentials;
 import jakarta.persistence.EntityManager;
@@ -32,14 +34,33 @@ public class UserCredentialsRepository implements CustomJPARepository<UserCreden
     }
 
     @Override
-    public UserCredentials save(UserCredentials entity) {
-        return null;
+    public UserCredentials save(UserCredentials userCredentials) {
+        try{
+            if(userCredentials.getId() == null){
+                entityManager.persist(userCredentials);
+            } else{
+                entityManager.merge(userCredentials);
+                System.out.println("Merged credentials");
+            }
+            return userCredentials;
+        } catch (EntityPersistenceException e){
+            throw new EntityPersistenceException("Could not persist user credentials: " + e.getMessage());
+        }
+
     }
+
 
     @Override
-    public void delete(Long aLong) {
-
+    public void delete(Long id) {
+        Optional<UserCredentials> userCredentials = find(id);
+        if(userCredentials.isPresent()){
+            System.out.println("Removing user");
+            entityManager.remove(userCredentials.get());
+        } else{
+            throw new EntityNotFoundException("User with id: " +  id + " not found");
+        }
     }
+
 
     public UserCredentials findByUsername(String username) {
         TypedQuery<UserCredentials> query = entityManager.createQuery(

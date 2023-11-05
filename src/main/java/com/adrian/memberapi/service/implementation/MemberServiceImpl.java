@@ -3,13 +3,18 @@ package com.adrian.memberapi.service.implementation;
 import com.adrian.memberapi.dto.AddressFullDTO;
 import com.adrian.memberapi.dto.MemberFullDTO;
 import com.adrian.memberapi.dto.MemberReducedDTO;
+import com.adrian.memberapi.dto.UserCredentialsFullDTO;
+import com.adrian.memberapi.exception.EntityNotFoundException;
 import com.adrian.memberapi.exception.NotFoundException;
 import com.adrian.memberapi.mapper.AddressMapper;
 import com.adrian.memberapi.mapper.MemberMapper;
+import com.adrian.memberapi.mapper.UserCredentialsMapper;
 import com.adrian.memberapi.model.Address;
 import com.adrian.memberapi.model.Member;
+import com.adrian.memberapi.model.UserCredentials;
 import com.adrian.memberapi.repository.AddressRepository;
 import com.adrian.memberapi.repository.MemberRepository;
+import com.adrian.memberapi.repository.UserCredentialsRepository;
 import com.adrian.memberapi.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,19 +29,21 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final AddressRepository addressRepository;
+    private final UserCredentialsRepository userCredentialsRepository;
     private final MemberMapper memberMapper;
     private final AddressMapper addressMapper;
+    private final UserCredentialsMapper userCredentialsMapper;
 
     @Autowired
-    public MemberServiceImpl(MemberRepository memberRepository, AddressRepository addressRepository,
-                             MemberMapper memberMapper, AddressMapper addressMapper) {
+    public MemberServiceImpl(MemberRepository memberRepository, AddressRepository addressRepository, UserCredentialsRepository userCredentialsRepository,
+                             MemberMapper memberMapper, AddressMapper addressMapper, UserCredentialsMapper userCredentialsMapper) {
         this.memberRepository = memberRepository;
         this.addressRepository = addressRepository;
+        this.userCredentialsRepository = userCredentialsRepository;
         this.memberMapper = memberMapper;
         this.addressMapper = addressMapper;
+        this.userCredentialsMapper = userCredentialsMapper;
     }
-
-
 
     @Override
     public List<MemberFullDTO> getAllMembers() {
@@ -69,11 +76,18 @@ public class MemberServiceImpl implements MemberService {
         AddressFullDTO addressDTO = memberDTO.getAddress();
         Address address = addressMapper.toEntity(addressDTO);
         Address persistedAddress = new Address();
-        if(addressDTO != null && addressDTO.getId() == null){
+        if(addressDTO.getId() == null){
             persistedAddress = addressRepository.save(address);
+        }
+        UserCredentialsFullDTO userCredentialsDTO = memberDTO.getUserCredentials();
+        UserCredentials userCredentials = userCredentialsMapper.toEntity(userCredentialsDTO);
+        UserCredentials persistedUserCredentials = new UserCredentials();
+        if(userCredentialsDTO.getId() == null){
+            persistedUserCredentials = userCredentialsRepository.save(userCredentials);
         }
         Member member = memberMapper.toEntityFromFullDTO(memberDTO);
         member.setAddress(persistedAddress);
+        member.setUserCredentials(persistedUserCredentials);
         Member savedMember = memberRepository.save(member);
         return memberMapper.toFullDTO(savedMember);
     }
@@ -93,6 +107,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void deleteMember(Long id) {
+        System.out.println(id);
+        Optional<Member> member = memberRepository.find(id);
+        if(member.isEmpty()){
+            throw new EntityNotFoundException("member with id: " + " not found");
+        }
         memberRepository.delete(id);
     }
 }
